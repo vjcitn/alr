@@ -1,0 +1,2 @@
+# alr
+alternating logistic regression
