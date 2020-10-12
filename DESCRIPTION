@@ -1,0 +1,16 @@
+Package: alr
+Version: 0.1.1
+Title: alternating logistic regression
+Author: VJ Carey <stvjc@channing.harvard.edu>
+Maintainer: VJ Carey <stvjc@channing.harvard.edu>
+Description: program for regression analysis of clustered binary response
+License: GPL
+URL: http://www.biostat.harvard.edu/~carey
+Packaged: 2015-11-10 08:42:58 UTC; rforge
+Repository: R-Forge
+Repository/R-Forge/Project: yags
+Repository/R-Forge/Revision: 72
+Repository/R-Forge/DateTimeStamp: 2015-07-10 13:45:41
+Date/Publication: 2015-07-10 13:45:41
+NeedsCompilation: yes
+Depends: R (>= 2.10)

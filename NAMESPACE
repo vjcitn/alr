@@ -1,0 +1,4 @@
+useDynLib(alr)
+exportPattern(".*")
+S3method(print,alr)
+S3method(summary,alr)
