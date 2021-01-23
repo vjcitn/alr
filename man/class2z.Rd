@@ -17,7 +17,6 @@ is a member of one of k classes.
 }
 \usage{
 class2z(cvec, id, k, dmat)
-~move the above line to just above the first optional argument
 }
 \arguments{
 \item{cvec}{
