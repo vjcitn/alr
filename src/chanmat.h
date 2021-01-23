@@ -10,7 +10,7 @@ extern jmp_buf env;
 #define errorbranch( exitlabel ) \
 if ( setjmp(env) != 0 ) \
         { \
-        fprintf(stderr,"chanmat error detected, returning to caller\n"); \
+        Rprintf("chanmat error detected, returning to caller\n"); \
         goto exitlabel ; \
         }
 

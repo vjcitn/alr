@@ -25,7 +25,7 @@ tmp = (MATRIX *) calloc ( 1, sizeof ( struct matrix ) );
 
 if ( tmp == NULL )
 	{
-	fprintf( stderr , "create_matrix: malloc attempt %d d.\n",
+	Rprintf("create_matrix: malloc attempt %d d.\n",
 				sizeof( struct matrix ));
 	Seterr_and_terminate( NO_MEM_MATSTRUCT );
 	}
@@ -38,9 +38,9 @@ tmp->data = ( double * ) calloc ( 1,  nrows * ncols * sizeof ( double ) ) ;
 
 if ( tmp->data == NULL )
 	{
-	fprintf( stderr , "create_matrix: malloc attempt %d d.\n",
+	Rprintf("create_matrix: malloc attempt %d d.\n",
 				(unsigned)nrows*ncols);
-	fprintf( stderr , "create_matrix: nrows=%d ncols=%d.\n",
+	Rprintf("create_matrix: nrows=%d ncols=%d.\n",
 				nrows, ncols );
 	Seterr_and_terminate( NO_MEM_MATDATA );
 	}
@@ -114,8 +114,8 @@ sr = mat->nrows;
 sc = mat->ncols;
 if ((nr > sr) || (nc > sc))
 	{
-	fprintf( stderr, "corner: request not a submatrix.\n");
-	fprintf( stderr, "corner: fatal error.\n");
+	Rprintf("corner: request not a submatrix.\n");
+	Rprintf("corner: fatal error.\n");
 	Seterr_and_terminate(CORNER_FAIL);
 	}
 tmp = create_matrix( nr, nc, EPHEMERAL );
@@ -193,9 +193,9 @@ MATRIX *matptr, *discptr, *matarrptr[];
 int i, j, istart, k, start, end;
 if ( discptr->ncols != 1 )
 	{
-	fprintf(stderr,"split: discriminator must be column vec.\n");
-	fprintf(stderr,"split: ncols = %d.\n", discptr->ncols);
-	fprintf(stderr,"split: fatal error.\n");
+	Rprintf("split: discriminator must be column vec.\n");
+	Rprintf("split: ncols = %d.\n", discptr->ncols);
+	Rprintf("split: fatal error.\n");
 	Seterr_and_terminate(SPLIT_FAIL );
 	}
 
@@ -231,7 +231,7 @@ xc = x->ncols;
 yc = y->ncols;
 if ( xc != yc ) 
 	{
-	fprintf(stderr, "M+-: stack: incompatible columns.\n");
+	Rprintf( "M+-: stack: incompatible columns.\n");
 	Seterr_and_terminate( CAN_T_STACK_MATRICES )
 	}
 xr = x->nrows;
@@ -262,7 +262,7 @@ prow = plugm->nrows;
 
 if ( pcol+col > socket->ncols || prow+row > socket->nrows )
 	{
-	fprintf( stderr,"M+-: plug: socket too small. Dies.\n");
+	Rprintf("M+-: plug: socket too small. Dies.\n");
 	Seterr_and_terminate(PLUG_FAIL);
 	}
 
@@ -329,7 +329,7 @@ incols = in->ncols;
 
 if ( ( inrows > incols ) ? inrows % incols : incols % inrows )
 	{
-	fprintf(stderr,"M+-:toeplitz: argument invalid. Dies.\n");
+	Rprintf("M+-:toeplitz: argument invalid. Dies.\n");
 	Seterr_and_terminate(BAD_TOEPLITZ_ARG);
 	}
 
@@ -382,7 +382,7 @@ MATRIX *star( x ) MATRIX *x;
 MATRIX *tmp;
 int xr, xc, nc2, i, j, curr;
 xc = x->ncols;
-if ( xc > 1 ) fprintf(stderr,"M+-: star: should have colvec.\n");
+if ( xc > 1 ) Rprintf("M+-: star: should have colvec.\n");
 xr = x->nrows;
 nc2 = tchoose2(xr);
 
@@ -408,7 +408,7 @@ MATRIX *tilde( x ) MATRIX *x;
 MATRIX *tmp;
 int xr, xc, nc2, i, j, curr;
 xc = x->ncols;
-if ( xc > 1 ) fprintf(stderr,"M+-: tilde: should have colvec.\n");
+if ( xc > 1 ) Rprintf("M+-: tilde: should have colvec.\n");
 xr = x->nrows;
 nc2 = tchoose2(xr);
 
@@ -570,10 +570,10 @@ double *mat1base, *mat2base, *resbase;
 int i, j, nlen,z=0;
 if ( ( mat1->ncols != mat2->ncols ) || ( mat1->nrows != mat2->nrows ) )
 	{
-	fprintf(stderr,"matadd: args (%dx%d) + (%dx%d) don't conform.\n",
+	Rprintf("matadd: args (%dx%d) + (%dx%d) don't conform.\n",
 		mat1->nrows, mat1->ncols, mat2->nrows,
 		mat2->ncols );
-	fprintf(stderr,"matadd: fatal error.  exits. \n");
+	Rprintf("matadd: fatal error.  exits. \n");
 	Seterr_and_terminate(MATADD_NONCONFORMITY);
 	}
 result = create_matrix( mat1->nrows , mat1->ncols, EPHEMERAL);
@@ -602,10 +602,10 @@ double *mat1base, *mat2base, *resbase;
 int i, j, nlen;
 if ( ( mat1->ncols != mat2->ncols ) || ( mat1->nrows != mat2->nrows ) )
 	{
-	fprintf(stderr,"matsub: args (%dx%d) + (%dx%d) don't conform.\n",
+	Rprintf("matsub: args (%dx%d) + (%dx%d) don't conform.\n",
 		mat1->nrows, mat1->ncols, mat2->nrows,
 		mat2->ncols );
-	fprintf(stderr,"matsub: fatal error.  exits. \n");
+	Rprintf("matsub: fatal error.  exits. \n");
 	Seterr_and_terminate(MATSUB_NONCONFORMITY);
 	}
 result = create_matrix( mat1->nrows , mat1->ncols, EPHEMERAL);
@@ -635,10 +635,10 @@ int i, rows, j, nlen;
 
 if ( mat1->ncols != mat2->nrows )
 	{
-	fprintf(stderr,"matmult: args (%dx%d) * (%dx%d) don't conform.\n",
+	Rprintf("matmult: args (%dx%d) * (%dx%d) don't conform.\n",
 		mat1->nrows, mat1->ncols, mat2->nrows,
 		mat2->ncols );
-	fprintf(stderr,"matmult: fatal error.  exits. \n");
+	Rprintf("matmult: fatal error.  exits. \n");
 	Seterr_and_terminate(MATMULT_NONCONFORMITY);
 	}
 
@@ -682,8 +682,8 @@ dc = d->ncols;
 
 ans = create_matrix( xr, xc, EPHEMERAL );
 
-if ( dc != 1 ) fprintf( stderr, "M+-: matxdiagasvec: d is not a vec.\n");
-if ( xc != dr ) fprintf( stderr, "M+-: matxdiagasvec: x and d do not conform\n");
+if ( dc != 1 ) Rprintf("M+-: matxdiagasvec: d is not a vec.\n");
+if ( xc != dr ) Rprintf("M+-: matxdiagasvec: x and d do not conform\n");
 
 for ( i = 0 ; i < xr ; i++ )
 	{
@@ -706,12 +706,12 @@ int i, j;
 
 if ( px1->ncols != 1 )
 	{
-	fprintf( stderr,"M+-: px1_times_pxq: arg1 not a col-vec. Dies.\n");
+	Rprintf( "M+-: px1_times_pxq: arg1 not a col-vec. Dies.\n");
 	Seterr_and_terminate(PX1XPXQ_ARG1_BAD);
 	}
 if ( px1->nrows != pxq->nrows )
 	{
-	fprintf( stderr,"M+-: px1_times_pxq: args not conforming.  Dies.\n");
+	Rprintf( "M+-: px1_times_pxq: args not conforming.  Dies.\n");
 	Seterr_and_terminate(PX1XPXQ_CONFORMITY);
 	}
 tmp = matcopy( pxq );
@@ -739,12 +739,12 @@ double *load, colel;
 int i, j;
 if ( px1->ncols != 1 )
 	{
-	fprintf( stderr,"M+-: pxq_divby_px1: arg2 not a col-vec. Dies.\n");
+	Rprintf("M+-: pxq_divby_px1: arg2 not a col-vec. Dies.\n");
 	Seterr_and_terminate(PXQDPX1_ARG1_BAD);
 	}
 if ( px1->nrows != pxq->nrows )
 	{
-	fprintf( stderr,"M+-: pxq_divby_px1: args not conforming.  Dies.\n");
+	Rprintf("M+-: pxq_divby_px1: args not conforming.  Dies.\n");
 	Seterr_and_terminate(PXQDPX1_CONFORMITY);
 	}
 
@@ -797,11 +797,10 @@ nel = mat->nrows * mat->ncols;
 
 for ( curel = mat->data ;  curel < mat->data + nel ; curel++ )
 	{
-	printf(  ((fabs(*curel)<.00001) && (fabs(*curel)>0.)) ? "%.4le%c" : "%.4lf%c" , *curel, 
+	Rprintf(  ((fabs(*curel)<.00001) && (fabs(*curel)>0.)) ? "%.4le%c" : "%.4lf%c" , *curel, 
 			( outtok++%mat->ncols == mat->ncols-1 )
 			? '\n' : ' ' );
 	}
-/* DOES NOT CLEAN */
 }
 
 void fmatdump( of, mat )
@@ -816,9 +815,8 @@ nel = mat->nrows * mat->ncols;
 
 for ( curel = mat->data ;  curel < mat->data + nel ; curel++ )
 	{
-	fprintf( of, ((fabs(*curel)<.00001) && (fabs(*curel)>0.)) ? "%.4le%c" : "%.4lf%c" , *curel,
-			( outtok++%mat->ncols == mat->ncols-1 )
-			? '\n' : ' ' );
+	Rprintf((fabs(*curel)<.00001) && (fabs(*curel)>0.) ? "%.4le%c" : "%.4lf%c" , *curel,
+			( outtok++%mat->ncols == mat->ncols-1 ) ? '\n' : ' ' );
 	}
 /* DOES NOT CLEAN */
 }
@@ -918,7 +916,7 @@ n = inmat->nrows;
 nrec = (double)1./(double)n;
 if ( n > MAX_COVLAG )
 	{
-	fprintf(stderr,"covlag: arg has > MAX_COVLAG rows. Dies.\n");
+	Rprintf("covlag: arg has > MAX_COVLAG rows. Dies.\n");
 	Seterr_and_terminate(EXCEED_MAX_COVLAG);
 	}
 
@@ -1061,10 +1059,7 @@ int tmp = 1, istart, i;
 
 if (X->ncols != 1)
 	{
-	fprintf(stderr,"nchanges:  must be column vector; ncols = %d.\n",
-				X->ncols);
-	fprintf(stderr,"nchanges: exiting.\n");
-	exit(1);
+	error("nchanges:  must be column vector; ncols != 1.\nexiting.\n");
 	}
 
 istart = MEL( X , 0 , 0 );

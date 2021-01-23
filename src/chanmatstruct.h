@@ -1,13 +1,13 @@
 /* /usr16/stdevs/stdev0f/SLIBS/alr.dev/SCCS/s.chanmatstruct.h */
 /* alr support chanmatstruct.h 3.1 97/03/23 */
 
+#include <R.h>
 #include <stdio.h>
 #include <math.h>
 /* #include <malloc.h> */
 
 /* mem alloc macros supplied by Bill Dunlap, VII.1996 */
  
-extern void *S_alloc() ;
 #define malloc(n) S_alloc(n, 1)
 #define calloc S_alloc
 #define free(p) {p;}
@@ -78,13 +78,13 @@ typedef struct matrix
 
 jmp_buf env;
 
-#define Seterr_and_terminate( Code ) { fprintf(stderr, \
+#define Seterr_and_terminate( Code ) { Rprintf( \
            "chanmat library error Code , returning.\n"); longjmp(env,1); }
 
 #define errorbranch( exitlabel ) \
 if ( setjmp(env) != 0 ) \
         { \
-        fprintf(stderr,"chanmat error detected, returning to caller\n"); \
+        Rprintf("chanmat error detected, returning to caller\n"); \
         goto exitlabel ; \
         }
  

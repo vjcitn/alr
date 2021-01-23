@@ -2,3 +2,6 @@ useDynLib(alr)
 exportPattern(".*")
 S3method(print,alr)
 S3method(summary,alr)
+
+importFrom("stats", "binomial", "glm", "model.extract", "model.matrix",
+             "quantile")

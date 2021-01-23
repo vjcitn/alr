@@ -1,6 +1,7 @@
 /* /proj/stdevs/stdev0f/SLIBS/alr.dev/SCCS/s.chanmatfuns.h */
 /* alr support chanmatfuns.h 3.2 97/03/23 */
 
+#include <R.h>
 
 extern MATRIX *create_matrix(),
      *matcopy(),

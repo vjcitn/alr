@@ -78,9 +78,9 @@ int *nzrows, *nobs, *p, *q, *maxiter, *z_is_mast, *exch, *twocl, *bindep, *silen
 #define Matdump( x )
 #define Printf( x )
 #define IPrintf( x )
-#define sMatdump( x ) { printf(" x \n"); matdump( x ); }
-#define sPrintf( x ) { printf(" x -> %lf\n", x ); }
-#define sIPrintf( x ) { printf(" x -> %d\n", x ); }
+#define sMatdump( x ) { Rprintf(" x \n"); matdump( x ); }
+#define sPrintf( x ) { Rprintf(" x -> %lf\n", x ); }
+#define sIPrintf( x ) { Rprintf(" x -> %d\n", x ); }
 {
 
 MATRIX *xin, *yin, *idin, *zin, *beta, *alpha, *zidin, *zlin, *cl2in;
@@ -102,7 +102,7 @@ double dadbl, dnrdbl, tmpf, td;
 
 onep = &one;
 
-fprintf(stderr,"@(#) alr.c: @(#) alr.c 4.11 98/02/17, chanlib version.\n");
+Rprintf("@(#) alr.c: @(#) alr.c 4.11 98/02/17, chanlib version.\n");
 is_exchangeable = *exch;
 is_twocl = *twocl;
 
@@ -190,7 +190,7 @@ do {
 		cfree( alpha_comps ); 
 		*/
 		}
-	if (!(*silent)) printf("Starting beta\n");
+	if (!(*silent)) Rprintf("Starting beta\n");
 
 	if ( is_exchangeable )
 		beta_comps = get_beta_comps_exch( nclust, X, Y, beta, 
@@ -201,7 +201,7 @@ do {
 	else beta_comps = get_beta_comps( nclust, X, Y, Z, beta, 
 				    alpha, ZL, zin, *z_is_mast, *bindep, W );
 
-	if (!(*silent)) printf("Done beta\n");
+	if (!(*silent)) Rprintf("Done beta\n");
 
 	make_permanent( beta_comps->X1 );
 	make_permanent( beta_comps->X2 );
@@ -218,7 +218,7 @@ do {
 	Matdump(beta);
 
 	/* CONDIT LOGIST */
-	if (!(*silent)) printf("Starting alpha\n");
+	if (!(*silent)) Rprintf("Starting alpha\n");
 
 	flip = 0;
 	if (is_exchangeable) alpha_comps = get_alpha_comps_exch( nclust, X, Y, beta,
@@ -249,7 +249,7 @@ do {
 
 	chk = matmaxabs( fulldel );
 
-	if (!(*silent)) printf("%d, %lf -- iter, curdel\n", iter, chk );
+	if (!(*silent)) Rprintf("%d, %lf -- iter, curdel\n", iter, chk );
 
 	} while ( iter++ < *maxiter && ( chk > *tol ) );
 
@@ -310,7 +310,7 @@ MATRIX *zret;
 
 ni = zl->nrows;
 nc = zl->ncols;
-if ( nc > 1 ) fprintf(stderr,"pluck_Z: zl should be column.\n");
+if ( nc > 1 ) Rprintf("pluck_Z: zl should be column.\n");
 
 nc = Z->ncols;
 nzr = Z->nrows;
@@ -360,8 +360,8 @@ ans = (MATRIX_PAIR_P *)calloc( 1, (unsigned)sizeof(struct matrix_pair_p));
 ans->SB = ( MATRIX **)calloc(nclust,(unsigned)sizeof(struct matrix));
 if ( ans->SB == (MATRIX **)NULL)
 	{
-	fprintf(stderr,"MATRIX_PAIR_P out of space for SB\n");
-	exit(1);
+	/* Rprintf("MATRIX_PAIR_P out of space for SB\n"); */
+	error("MATRIX_PAIR_P out of space for SB\n");  /* remove exit */
 	}
 
 condcount = 0;
@@ -404,10 +404,10 @@ thisw = MEL(W[c],0,0);
 			chkrt = a*a - 4.*psi2ij*(psi2ij-1.)*mui*muj;
 
 			if (chkrt < 0.) 
-			  fprintf(stderr,"beta comps: Mu2 calcs have invalid sqrt.\n");
+			  Rprintf("beta comps: Mu2 calcs have invalid sqrt.\n");
 
 			if (fabs(psi2ij-1.) < SMALL )
-			  fprintf(stderr,"Mu2 calcs have invalid denom, c= %d i=%d, j=%d, r0=%d.\n",c,i,j,r0);
+			  Rprintf("Mu2 calcs have invalid denom, c= %d i=%d, j=%d, r0=%d.\n",c,i,j,r0);
 
 			if ( psi2ij == 1.) mu2 = mui*muj;
 			else mu2 =
@@ -444,15 +444,15 @@ thisw = MEL(W[c],0,0);
 	   if ( Binvc->condition < .03 && condcount < 6) 
 	       {
 	       condcount++;
-	       fprintf(stderr,
+	       Rprintf(
 			"get_beta_comps: full weighting has low condition #\n");
-	       fprintf(stderr,
+	       Rprintf(
 			"get_beta_comps: cluster %d, cond(dgeco) = %lf\n", c,
 							   Binvc->condition );
-	       fprintf(stderr,
+	       Rprintf(
 			"get_beta_comps: consider independence model for beta\n");
 		if ( condcount > 4 ) 
-		   fprintf(stderr,"No more condition msgs this iter.\n");
+		   Rprintf("No more condition msgs this iter.\n");
 	       }
 	   op = matmult( transp(C), Binvc->mat );
 	   }
@@ -522,8 +522,7 @@ ans = (MATRIX_TRIPLET_P *)calloc( 1, (unsigned)sizeof(struct matrix_triplet_p));
 ans->SA = ( MATRIX **)calloc(nclust,(unsigned)sizeof(struct matrix));
 if ( ans->SA == (MATRIX **)NULL)
 	{
-	fprintf(stderr,"MATRIX_TRIPLE_P out of space for SA\n");
-	exit(1);
+	error("MATRIX_TRIPLE_P out of space for SA\n");
 	}
 
 p = X[0]->ncols;
@@ -611,7 +610,7 @@ for ( c = 0 ; c < nclust ; c++ )
 			if (j == i) continue;
 			r0 = nrfun( ni, i, j );  /* zerobased r */
 
-/* printf("r0 = %d\n",r0); */
+/* Rprintf("r0 = %d\n",r0); */
 
 			psi2ij = MEL( psi2, r0, 0 );
 
@@ -627,10 +626,10 @@ for ( c = 0 ; c < nclust ; c++ )
 			chkrt = a*a - 4.*psi2ij*(psi2ij-1.)*mpr;
 
 			if (chkrt < 0.) 
-			  fprintf(stderr,"Mu2 calcs have invalid sqrt.\n");
+			  Rprintf("Mu2 calcs have invalid sqrt.\n");
 
 			if (fabs(psi2ij-1.) < SMALL )
-			  fprintf(stderr,"Mu2 calcs have invalid denom. (psi2ij = %lf)\n",
+			  Rprintf("Mu2 calcs have invalid denom. (psi2ij = %lf)\n",
 psi2ij);
 
 
@@ -646,13 +645,13 @@ psi2ij);
 			toff = (mui - mu2ij)/ tmpd;
 
 			if ( toff < SMALL )
-			  fprintf(stderr,"offset calc log of %f, omitted \n",
+			  Rprintf("offset calc log of %f, omitted \n",
 						 toff);
 
 			tmpalogit = gamr*MEL(thisy,j,0) + log(toff);
 
 			if ( c < 0 )
-			printf("%lf <- tmpalogit\n",tmpalogit);
+			Rprintf("%lf <- tmpalogit\n",tmpalogit);
 
 			MEL(Zeta,r0,0) = exp(tmpalogit)/(1.+exp(tmpalogit));
 
@@ -667,7 +666,7 @@ psi2ij);
 				{
 /* int ooo; */
 				Zrk = MEL( thisZ, r0, k );
-/* printf("Zrk = %lf\n",Zrk);
+/* Rprintf("Zrk = %lf\n",Zrk);
 if (Zrk < 1.0) scanf("%d\n",&ooo); */
 				Alphak = MEL( alpha, k, 0 );
 				dadalk = (mui+muj)*Zrk*psi2ij;
@@ -682,7 +681,7 @@ if (Zrk < 1.0) scanf("%d\n",&ooo); */
 
 				if ( fabs(Dn) < SMALL )
 					{
-					fprintf(stderr,"Alpha comps: Dn small. (%lf)\n",Dn);
+					Rprintf("Alpha comps: Dn small. (%lf)\n",Dn);
 					dndalk = 0.;
 					}
 				else dndalk = (dNdal*Dn-dDdalk*tmpm)/(Dn*Dn);
@@ -760,7 +759,7 @@ if (Zrk < 1.0) scanf("%d\n",&ooo); */
 
 	if ( 820 < 0 && c < 830 ) 
 		{
-		printf("%d\n",c);
+		Rprintf("%d\n",c);
 		Matdump( DtEG );
 		Matdump( D );
 		Matdump( E );
@@ -1118,8 +1117,7 @@ ans = (MATRIX_TRIPLET_P *)calloc( 1, (unsigned)sizeof(struct matrix_triplet_p));
 ans->SA = ( MATRIX **)calloc(nclust,(unsigned)sizeof(struct matrix));
 if ( ans->SA == (MATRIX **)NULL)
 	{
-	fprintf(stderr,"MATRIX_TRIPLE_P out of space for SA\n");
-	exit(1);
+	error("MATRIX_TRIPLE_P out of space for SA\n");
 	}
 
 p = X[0]->ncols;
@@ -1179,10 +1177,10 @@ thisw = MEL(W[c],0,0);
 			chkrt = a*a - 4.*psi2ij*(psi2ij-1.)*mpr;
 
 			if (chkrt < 0.) 
-			  fprintf(stderr,"Mu2 calcs have invalid sqrt.\n");
+			  Rprintf("Mu2 calcs have invalid sqrt.\n");
 
 			if (fabs(psi2ij-1.) < SMALL )
-			  fprintf(stderr,"Mu2 calcs have invalid denom.\n");
+			  Rprintf("Mu2 calcs have invalid denom.\n");
 
 			tmpm = a - sqrt(chkrt) ;
 
@@ -1196,13 +1194,13 @@ thisw = MEL(W[c],0,0);
 			toff = (mui - mu2ij)/ tmpd;
 
 			if ( toff < SMALL )
-			  fprintf(stderr,"offset calc log of %f, omitted \n",
+			  Rprintf("offset calc log of %f, omitted \n",
 						 toff);
 
 			tmpalogit = gamr*MEL(thisy,j,0) + log(toff);
 
 			if ( c < 0 )
-			printf("%lf <- tmpalogit\n",tmpalogit);
+			Rprintf("%lf <- tmpalogit\n",tmpalogit);
 
 			Zij = exp(tmpalogit)/(1.+exp(tmpalogit));
 
@@ -1222,7 +1220,7 @@ thisw = MEL(W[c],0,0);
 
 			if ( fabs(Dn) < SMALL )
 				{
-				fprintf(stderr,"Dn small.\n");
+				Rprintf("Dn small.\n");
 				dndalk = 0.;
 				}
 			else dndalk = (dNdal*Dn-dDdalk*tmpm)/(Dn*Dn);
@@ -1292,8 +1290,7 @@ ans = (MATRIX_PAIR_P *)calloc( 1, (unsigned)sizeof(struct matrix_pair_p));
 ans->SB = ( MATRIX **)calloc(nclust,(unsigned)sizeof(struct matrix));
 if ( ans->SB == (MATRIX **)NULL)
 	{
-	fprintf(stderr,"MATRIX_PAIR_P out of space for SB\n");
-	exit(1);
+	error("MATRIX_PAIR_P out of space for SB\n");
 	}
 
 for ( c = 0 ; c < nclust ; c++ )
@@ -1327,10 +1324,10 @@ for ( c = 0 ; c < nclust ; c++ )
 			chkrt = a*a - 4.*psi2ij*(psi2ij-1.)*mui*muj;
 
 			if (chkrt < 0.) 
-			  fprintf(stderr,"Mu2 calcs have invalid sqrt.\n");
+			  Rprintf("Mu2 calcs have invalid sqrt.\n");
 
 			if (fabs(psi2ij-1.) < SMALL )
-			  fprintf(stderr,"Mu2 calcs have invalid denom.\n");
+			  Rprintf("Mu2 calcs have invalid denom.\n");
 
 			if ( psi2ij == 1.) mu2 = mui*muj;
 			else mu2 =
@@ -1360,7 +1357,7 @@ for ( c = 0 ; c < nclust ; c++ )
 
 	/* matdump( corner( B , 5, 5 ) ); */
 
-	/* printf("[%d]B cond: %lf\n", c, estcond(B) ); */
+	/* Rprintf("[%d]B cond: %lf\n", c, estcond(B) ); */
 
 	if ( !bindep )
 	   op = matmult( transp(C), sweep(B) );  /* code restored 5-29-2011 */
@@ -1372,15 +1369,15 @@ for ( c = 0 ; c < nclust ; c++ )
            if ( mincond < .03 && condcount < 6 )
                {
 	       condcount++ ;
-               fprintf(stderr,
+               Rprintf(
                         "get_beta_comps: full weighting has low condition #\n");
-               fprintf(stderr,
+               Rprintf(
                         "get_beta_comps: cluster %d, cond(dgeco) = %lf\n", c,
                                                            Binvc->condition );
-               fprintf(stderr,
+               Rprintf(
                         "get_beta_comps: consider independence model for beta\n");
 		if ( condcount > 4 ) 
-		   fprintf(stderr,"No more condition msgs this iter.\n");
+		   Rprintf("No more condition msgs this iter.\n");
                }
            op = matmult( transp(C), Binvc->mat );
            }
@@ -1448,13 +1445,12 @@ ans = (MATRIX_PAIR_P *)calloc( 1, (unsigned)sizeof(struct matrix_pair_p));
 ans->SB = ( MATRIX **)calloc(nclust,(unsigned)sizeof(struct matrix));
 if ( ans->SB == (MATRIX **)NULL)
 	{
-	fprintf(stderr,"MATRIX_PAIR_P out of space for SB\n");
-	exit(1);
+	error("MATRIX_PAIR_P out of space for SB\n");
 	}
 
 for ( c = 0 ; c < nclust ; c++ )
 	{
-	printf("C%d %c",c, ((c % 10)==9) ? '\n' : ' '); 
+	Rprintf("C%d %c",c, ((c % 10)==9) ? '\n' : ' '); 
 /*	printf("CLUST %d/%d\n",c,nclust); */
 	thisw = MEL(W[c],0,0);
 
@@ -1486,10 +1482,10 @@ for ( c = 0 ; c < nclust ; c++ )
 			chkrt = a*a - 4.*psi2ij*(psi2ij-1.)*mui*muj;
 
 			if (chkrt < 0.) 
-			  fprintf(stderr,"Mu2 calcs have invalid sqrt.\n");
+			  Rprintf("Mu2 calcs have invalid sqrt.\n");
 
 			if (fabs(psi2ij-1.) < SMALL )
-			  fprintf(stderr,"Mu2 calcs have invalid denom.\n");
+			  Rprintf("Mu2 calcs have invalid denom.\n");
 
 			if ( psi2ij == 1.) mu2 = mui*muj;
 			else mu2 =
@@ -1524,15 +1520,15 @@ for ( c = 0 ; c < nclust ; c++ )
            if ( mincond < .03 && condcount < 6)
                {
 	       condcount++;
-               fprintf(stderr,
+               Rprintf(
                         "get_beta_comps: full weighting has low condition #\n");
-               fprintf(stderr,
+               Rprintf(
                         "get_beta_comps: cluster %d, cond(dgeco) = %lf\n", c,
                                                            Binvc->condition );
-               fprintf(stderr,
+               Rprintf(
                         "get_beta_comps: consider independence model for beta\n");
 		if ( condcount > 4 ) 
-		   fprintf(stderr,"No more condition msgs this iter.\n");
+		   Rprintf("No more condition msgs this iter.\n");
                }
            op = matmult( transp(C), Binvc->mat );
            }
@@ -1605,8 +1601,7 @@ ans = (MATRIX_TRIPLET_P *)calloc( 1, (unsigned)sizeof(struct matrix_triplet_p));
 ans->SA = ( MATRIX **)calloc(nclust,(unsigned)sizeof(struct matrix));
 if ( ans->SA == (MATRIX **)NULL)
 	{
-	fprintf(stderr,"MATRIX_TRIPLE_P out of space for SA\n");
-	exit(1);
+	error("MATRIX_TRIPLE_P out of space for SA\n");
 	}
 
 p = X[0]->ncols;
@@ -1622,8 +1617,8 @@ for ( c = 0 ; c < nclust ; c++ )
 thisw = MEL(W[c],0,0);
 	if ( ni == 1 ) continue;  /* skip a singleton */
 
-	/*printf("%d ",c); */
-	printf("A%d %c",c, ((c % 10)==9) ? '\n' : ' '); 
+	/*Rprintf("%d ",c); */
+	Rprintf("A%d %c",c, ((c % 10)==9) ? '\n' : ' '); 
 	if ( Flip )
 		{
 		thisx = flip(X[c]);
@@ -1673,10 +1668,10 @@ thisw = MEL(W[c],0,0);
 			chkrt = a*a - 4.*psi2ij*(psi2ij-1.)*mpr;
 
 			if (chkrt < 0.) 
-			  fprintf(stderr,"Mu2 calcs have invalid sqrt.\n");
+			  Rprintf("Mu2 calcs have invalid sqrt.\n");
 
 			if (fabs(psi2ij-1.) < SMALL )
-			  fprintf(stderr,"Mu2 calcs have invalid denom.\n");
+			  Rprintf("Mu2 calcs have invalid denom.\n");
 
 			tmpm = a - sqrt(chkrt) ;
 
@@ -1690,13 +1685,13 @@ thisw = MEL(W[c],0,0);
 			toff = (mui - mu2ij)/ tmpd;
 
 			if ( toff < SMALL )
-			  fprintf(stderr,"offset calc log of %f, omitted \n",
+			  Rprintf("offset calc log of %f, omitted \n",
 						 toff);
 
 			tmpalogit = gamr*MEL(thisy,j,0) + log(toff);
 
 			if ( c < 0 )
-			printf("%lf <- tmpalogit\n",tmpalogit);
+			Rprintf("%lf <- tmpalogit\n",tmpalogit);
 
 			Zetaij = exp(tmpalogit)/(1.+exp(tmpalogit));
 
@@ -1723,14 +1718,14 @@ thisw = MEL(W[c],0,0);
 
 			if ( fabs(Dn) < SMALL )
 				{
-				fprintf(stderr,"Dn small.\n");
+				Rprintf("Dn small.\n");
 				dndalk = 0.;
 				}
 			else dndalk = (dNdal*Dn-dDdalk*tmpm)/(Dn*Dn);
 
 			if ( fabs(Dn) < SMALL )
 				{
-				fprintf(stderr,"Dn small.\n");
+				Rprintf("Dn small.\n");
 				dndalk2 = 0.;
 				}
 			else dndalk2 = (dNdal2*Dn-dDdalk2*tmpm)/(Dn*Dn);
@@ -1768,7 +1763,7 @@ thisw = MEL(W[c],0,0);
 				MEL(DtEG,1,l) = MEL(DtEG,1,l) + DtE2*Gijl;
 				/* if ( c < 2 && i < 3 && j < 4 )
 					{
-					printf("DtE %lf, DtE2 %lf\n",DtE, DtE2);
+					Rprintf("DtE %lf, DtE2 %lf\n",DtE, DtE2);
 					matdump(DtEG);
 					} */
 				}

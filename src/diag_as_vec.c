@@ -15,9 +15,9 @@ MATRIX *inmat;
 
   if(inmat->ncols!=inmat->nrows)
     {
-      fprintf(stderr,"M+-: diag_as_vec: arg is not a square matrix. Dies.\n");
-      fprintf(stderr,"\nNumber of columns = %d",inmat->ncols);
-      fprintf(stderr,"\nNumber of rows    = %d\n",inmat->nrows);
+      Rprintf("M+-: diag_as_vec: arg is not a square matrix. Dies.\n");
+      Rprintf("\nNumber of columns = %d",inmat->ncols);
+      Rprintf("\nNumber of rows    = %d\n",inmat->nrows);
       Seterr_and_terminate(DIAG_AS_VEC_ARG_BAD);
     }
 

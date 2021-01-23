@@ -1,14 +1,13 @@
 /* /usr16/stdevs/stdev0f/SLIBS/alr.dev/SCCS/s.alr.h */
 /* alr.h 1.2 98/02/23 */
 
+#include <R.h>
 #include "stdlib.h"
 #include "chanmat.h"
 
 #define set_matrix_array( arrname, nel ) \
    if (!( arrname = (MATRIX **)malloc((unsigned)(nel * sizeof(MATRIX *))))) \
-     { fprintf(stderr, \
-	    "set_matrix_array (mac): out of memory for arrname nel elements\n"); \
-     exit(1); \
+     { error( "set_matrix_array (mac): out of memory for arrname nel elements\n"); \
      }
 
 #define SMALL .00000000001

@@ -24,7 +24,7 @@ void class2z( class, id, dmat, z, zid, k, n, nrz, p, q, nclust, flag)
   from_S( z, nrz, q, Z);
   from_S( zid, nrz, &one, Zid);
 
-printf("[1]\n");
+Rprintf("[1]\n");
 
   count=0;
   for(i=0;i< *k;i++){
@@ -36,7 +36,7 @@ printf("[1]\n");
   }
   destroy_matrix(din);
 
-printf("[2]\n");
+Rprintf("[2]\n");
 
   split(cin,idin,C);
   split(idin,idin,ID);
@@ -49,7 +49,7 @@ printf("[2]\n");
     destroy_matrix(ID[i]);
   }
 
-printf("[3]\n");
+Rprintf("[3]\n");
 
   count=0;
   for(cc=0;cc<*nclust;cc++){
@@ -72,7 +72,7 @@ printf("[3]\n");
 
   }
 
-printf("[4]\n");
+Rprintf("[4]\n");
 
   if( count != Z->nrows ) *flag=1;
 
